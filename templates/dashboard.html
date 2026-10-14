@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat {
+            background: #ecfdf5;
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 25px;
+            margin-top: 8px;
+        }
+
+        button, .link {
+            background: #059669;
+            color: white;
+            padding: 10px 15px;
+            border: 0;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .danger { background: #dc2626; }
+
+        li { margin: 10px 0; }
+
+        @media (max-width: 450px) {
+            .stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Feedback Analytics Dashboard</h1>
+    <p>Summary of submitted student feedback</p>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Overall Statistics</h2>
+
+        <div class="stats">
+            <div class="stat">
+                Total Feedback
+                <strong>{{ data.total }}</strong>
+            </div>
+
+            <div class="stat">
+                Positive
+                <strong>{{ data.percentages.Positive }}%</strong>
+            </div>
+
+            <div class="stat">
+                Negative
+                <strong>{{ data.percentages.Negative }}%</strong>
+            </div>
+
+            <div class="stat">
+                Neutral
+                <strong>{{ data.percentages.Neutral }}%</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Common Topics</h2>
+
+        {% if data.topic_counts %}
+            <ul>
+                {% for topic, count in data.topic_counts.items() %}
+                    <li>{{ topic }}: {{ count }} occurrence(s)</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No feedback submitted yet.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Feedback Records</h2>
+
+        {% if data.results %}
+            {% for item in data.results %}
+                <article>
+                    <p><strong>Feedback:</strong> {{ item.feedback }}</p>
+                    <p><strong>Sentiment:</strong> {{ item.sentiment }}</p>
+                    <p><strong>Topics:</strong> {{ item.topics|join(", ") }}</p>
+                    <hr>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>No feedback records available.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <a class="link" href="{{ url_for('home') }}">Back to Home</a>
+
+        <form method="POST" action="{{ url_for('clear') }}"
+              style="margin-top: 20px;"
+              onsubmit="return confirm('Clear all feedback records?');">
+            <button class="danger" type="submit">Clear All Data</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
