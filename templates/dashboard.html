@@ -1,149 +1,369 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback Dashboard</title>
+    <title>EduMind AI | Feedback Dashboard</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #07111f;
+            --panel: #101e30;
+            --panel-light: #17283d;
+            --green: #10b981;
+            --green-light: #6ee7b7;
+            --white: #f8fafc;
+            --muted: #9caec2;
+            --border: #26384d;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #0f172a;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--white);
             margin: 0;
+            line-height: 1.6;
         }
 
         header {
-            background: #0f172a;
-            color: white;
-            padding: 25px;
+            background: #0b192a;
+            border-bottom: 1px solid var(--border);
+            padding: 28px 18px;
             text-align: center;
         }
 
+        header h1 {
+            margin: 0 0 8px;
+            font-size: clamp(25px, 4vw, 38px);
+        }
+
+        header p {
+            color: var(--muted);
+            margin: 0;
+        }
+
         main {
-            max-width: 850px;
+            max-width: 1100px;
             margin: 30px auto;
-            padding: 0 15px;
+            padding: 0 18px;
         }
 
         .card {
-            background: white;
-            padding: 22px;
-            margin-bottom: 20px;
-            border-radius: 12px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 22px;
+            border-radius: 15px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 14px;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 14px;
         }
 
         .stat {
-            background: #ecfdf5;
+            background: var(--panel-light);
             padding: 18px;
-            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+        }
+
+        .stat p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
         }
 
         .stat strong {
             display: block;
-            font-size: 25px;
+            font-size: 29px;
             margin-top: 8px;
         }
 
+        .green { color: #6ee7b7; }
+        .blue { color: #93c5fd; }
+        .orange { color: #fdba74; }
+        .red { color: #fca5a5; }
+        .purple { color: #c4b5fd; }
+
+        .topic-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .topic-list li {
+            background: var(--panel-light);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 14px;
+        }
+
+        .record {
+            background: #0b1726;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            margin: 15px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .record p {
+            margin: 8px 0;
+        }
+
+        .sentiment {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #1e293b;
+        }
+
+        .sentiment-very-positive {
+            color: #34d399;
+            background: #12392f;
+        }
+
+        .sentiment-positive {
+            color: #6ee7b7;
+            background: #12392f;
+        }
+
+        .sentiment-neutral {
+            color: #cbd5e1;
+            background: #293548;
+        }
+
+        .sentiment-negative {
+            color: #fdba74;
+            background: #422d1a;
+        }
+
+        .sentiment-very-negative {
+            color: #fca5a5;
+            background: #451f2b;
+        }
+
+        .suggestions {
+            padding-left: 22px;
+            color: #d6e2ef;
+        }
+
+        .suggestions li {
+            margin: 7px 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
         button, .link {
-            background: #059669;
-            color: white;
-            padding: 10px 15px;
+            display: inline-block;
+            background: var(--green);
+            color: #04130e;
+            padding: 11px 16px;
             border: 0;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
         }
 
-        .danger { background: #dc2626; }
+        button:hover, .link:hover {
+            background: var(--green-light);
+        }
 
-        li { margin: 10px 0; }
+        .danger {
+            background: #dc2626;
+            color: white;
+        }
 
-        @media (max-width: 450px) {
-            .stats { grid-template-columns: 1fr; }
+        .danger:hover {
+            background: #ef4444;
+        }
+
+        .empty {
+            color: var(--muted);
+            padding: 10px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        @media (max-width: 500px) {
+            main {
+                padding: 0 12px;
+                margin-top: 18px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .stat {
+                padding: 13px;
+            }
+
+            .stat strong {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 
 <body>
+
 <header>
-    <h1>Feedback Analytics Dashboard</h1>
-    <p>Summary of submitted student feedback</p>
+    <h1>✦ EduMind AI Dashboard</h1>
+    <p>Student Feedback Analytics and Improvement Insights</p>
 </header>
 
 <main>
     <section class="card">
-        <h2>Overall Statistics</h2>
+        <h2>📊 Overall Statistics</h2>
+        <p class="muted">Sentiment distribution across submitted feedback.</p>
 
         <div class="stats">
             <div class="stat">
-                Total Feedback
+                <p>Total Feedback</p>
                 <strong>{{ data.total }}</strong>
             </div>
 
             <div class="stat">
-                Positive
-                <strong>{{ data.percentages.Positive }}%</strong>
+                <p>Very Positive</p>
+                <strong class="green">{{ data.counts.get('Very Positive', 0) }}</strong>
+                <p>{{ data.percentages.get('Very Positive', 0) }}% of feedback</p>
             </div>
 
             <div class="stat">
-                Negative
-                <strong>{{ data.percentages.Negative }}%</strong>
+                <p>Positive</p>
+                <strong class="green">{{ data.counts.get('Positive', 0) }}</strong>
+                <p>{{ data.percentages.get('Positive', 0) }}% of feedback</p>
             </div>
 
             <div class="stat">
-                Neutral
-                <strong>{{ data.percentages.Neutral }}%</strong>
+                <p>Neutral</p>
+                <strong class="blue">{{ data.counts.get('Neutral', 0) }}</strong>
+                <p>{{ data.percentages.get('Neutral', 0) }}% of feedback</p>
+            </div>
+
+            <div class="stat">
+                <p>Negative</p>
+                <strong class="orange">{{ data.counts.get('Negative', 0) }}</strong>
+                <p>{{ data.percentages.get('Negative', 0) }}% of feedback</p>
+            </div>
+
+            <div class="stat">
+                <p>Very Negative</p>
+                <strong class="red">{{ data.counts.get('Very Negative', 0) }}</strong>
+                <p>{{ data.percentages.get('Very Negative', 0) }}% of feedback</p>
             </div>
         </div>
     </section>
 
     <section class="card">
-        <h2>Common Topics</h2>
+        <h2>🔎 Common Feedback Topics</h2>
+        <p class="muted">Topics identified using keywords in student comments.</p>
 
         {% if data.topic_counts %}
-            <ul>
+            <ul class="topic-list">
                 {% for topic, count in data.topic_counts.items() %}
-                    <li>{{ topic }}: {{ count }} occurrence(s)</li>
+                    <li>
+                        <strong>{{ topic }}</strong>
+                        <br>
+                        <span class="muted">{{ count }} occurrence(s)</span>
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p>No feedback submitted yet.</p>
+            <p class="empty">No feedback topics available yet.</p>
         {% endif %}
     </section>
 
     <section class="card">
-        <h2>Feedback Records</h2>
+        <h2>📝 Feedback Records</h2>
 
         {% if data.results %}
             {% for item in data.results %}
-                <article>
+                <article class="record">
                     <p><strong>Feedback:</strong> {{ item.feedback }}</p>
-                    <p><strong>Sentiment:</strong> {{ item.sentiment }}</p>
+
+                    <p>
+                        <strong>Sentiment:</strong>
+                        <span class="sentiment sentiment-{{ item.sentiment|lower|replace(' ', '-') }}">
+                            {{ item.sentiment }}
+                        </span>
+                    </p>
+
+                    <p><strong>Compound Score:</strong> {{ item.score }}</p>
                     <p><strong>Topics:</strong> {{ item.topics|join(", ") }}</p>
-                    <hr>
+
+                    <p><strong>Improvement Suggestions:</strong></p>
+                    <ul class="suggestions">
+                        {% for suggestion in item.suggestions %}
+                            <li>{{ suggestion }}</li>
+                        {% endfor %}
+                    </ul>
                 </article>
             {% endfor %}
         {% else %}
-            <p>No feedback records available.</p>
+            <p class="empty">
+                No feedback records available. Submit feedback from the home page to get started.
+            </p>
         {% endif %}
     </section>
 
     <section class="card">
-        <a class="link" href="{{ url_for('home') }}">Back to Home</a>
+        <div class="actions">
+            <a class="link" href="{{ url_for('home') }}">← Back to Home</a>
 
-        <form method="POST" action="{{ url_for('clear') }}"
-              style="margin-top: 20px;"
-              onsubmit="return confirm('Clear all feedback records?');">
-            <button class="danger" type="submit">Clear All Data</button>
-        </form>
+            <form method="POST" action="{{ url_for('clear') }}">
+                <button class="danger" type="submit">Clear All Feedback</button>
+            </form>
+        </div>
+        <p class="muted" style="margin-top: 14px">
+            Clearing feedback removes the records from the current application session.
+        </p>
     </section>
 </main>
+
+<footer>
+    EduMind AI · Student Feedback Analysis Assistant<br>
+    Python · Flask · VADER Sentiment Analysis · HTML · CSS
+</footer>
+
 </body>
 </html>
